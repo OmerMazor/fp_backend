@@ -46,5 +46,7 @@ urllib3==1.26.11
 webdriver-manager==4.0.2
 wsproto==1.2.0
 gunicorn==21.2.0
+Flask==3.0.3
+Flask-Cors==4.0.0
 
 
