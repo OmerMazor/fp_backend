@@ -123,7 +123,9 @@ def train_model():
     print(f"🔹 Cross-Validation Accuracy: {np.mean(scores):.4f} ± {np.std(scores):.4f}")
     mean_accuracy = np.mean(scores)
     pipeline.fit(X, y)
-    dump({"model": pipeline, "accuracy": mean_accuracy}, "model_with_accuracy.joblib")
+    ## dump({"model": pipeline, "accuracy": mean_accuracy}, "model_with_accuracy.joblib")
+    dump(pipeline, "pipeline.joblib")
+    dump(mean_accuracy, "accuracy.joblib")
     predictions = pipeline.predict(X)
     team_labels = teams.loc[X.index].values
 
