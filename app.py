@@ -39,9 +39,11 @@ from get_data_from_site import teams_data
 app = Flask(__name__)
 CORS(app)  # מאפשר שליחת בקשות מ-React
 
-loaded = load("model_with_accuracy.joblib")
-pipeline = loaded["model"]
-mean_accuracy = loaded["accuracy"]
+# loaded = load("model_with_accuracy.joblib")
+pipeline = load("pipeline.joblib")
+mean_accuracy = load("accuracy.joblib")
+# pipeline = loaded["model"]
+# mean_accuracy = loaded["accuracy"]
 results_df = pd.read_csv("results.csv")
 
 
