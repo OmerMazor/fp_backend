@@ -9,7 +9,7 @@ import undetected_chromedriver as uc
 
 
 def teams_data(home_team, away_team, home_market_value, away_market_value):  
-    BROWSERLESS_WS = wss://chrome.browserless.io?token=2SpY3xZ7Z71SknOf18ee649d29e8a0b397f01746d1b64ac41
+    BROWSERLESS_WS = os.getenv("BROWSERLESS_WS")
     opts = webdriver.ChromeOptions()
     # דגלים מומלצים
     opts.add_argument("--headless=new")
@@ -454,4 +454,5 @@ def matches_day_data():
         print(f"An error occurred: {e}")
 
     driver.quit()
+
 
