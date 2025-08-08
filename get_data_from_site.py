@@ -8,21 +8,30 @@ from datetime import datetime
 import undetected_chromedriver as uc
 
 
-def teams_data(home_team, away_team, home_market_value, away_market_value):    
-    firefox_options = FirefoxOptions()
-    # firefox_options.add_argument("--headless")
+def teams_data(home_team, away_team, home_market_value, away_market_value):  
+    BROWSERLESS_WS = wss://chrome.browserless.io?token=2SpY3xZ7Z71SknOf18ee649d29e8a0b397f01746d1b64ac41
+    opts = webdriver.ChromeOptions()
+    # דגלים מומלצים
+    opts.add_argument("--headless=new")
+    opts.add_argument("--no-sandbox")
+    opts.add_argument("--disable-dev-shm-usage")
+    opts.add_argument("--disable-gpu")
+    opts.add_argument("--window-size=1920,1080")
+    opts.add_argument("--disable-blink-features=AutomationControlled")
+    # אפשר גם user-agent משלך:
+    # opts.add_argument("--user-agent=Mozilla/5.0 ...")
 
-    # driver = webdriver.Firefox(options=firefox_options)
-    # webgl_status = driver.execute_script("return !!window.WebGLRenderingContext;")
-    # print(f"WebGL enabled: {webgl_status}")
-    options = uc.ChromeOptions()
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")       # חשוב לענן
-    options.add_argument("--disable-blink-features=AutomationControlled")
-    options.add_argument("--headless=new")                 # headless מודרני
-    options.add_argument("--disable-gpu")
-    options.add_argument("--window-size=1920,1080")
-    driver = uc.Chrome(options=options) 
+    # קצת “stealth” בסיסי
+    opts.add_experimental_option("excludeSwitches", ["enable-automation"])
+    opts.add_experimental_option("useAutomationExtension", False)
+    opts.page_load_strategy = "eager"  # עולה מהר יותר לרוב הסקראייפים
+
+    # התחברות ל-Browserless (תעדיף WS; אם אין – תשתמש HTTP)
+    command_executor = BROWSERLESS_WS or BROWSERLESS_HTTP
+    if not command_executor:
+        raise RuntimeError("Missing BROWSERLESS_WS or BROWSERLESS_HTTP env var")
+
+    driver = webdriver.Remote(command_executor=command_executor, options=opts)
     url = f"https://fbref.com/en/search/search.fcgi?hint={home_team.replace(' ', '+')}&search={home_team.replace(' ', '+')}&pid=&idx="
     driver.get(url)
     time.sleep(5)
@@ -445,3 +454,4 @@ def matches_day_data():
         print(f"An error occurred: {e}")
 
     driver.quit()
+
