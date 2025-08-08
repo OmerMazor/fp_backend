@@ -48,6 +48,8 @@ wsproto==1.2.0
 gunicorn==21.2.0
 Flask==3.0.3
 flask-cors==4.0.0
+xgboost==2.0.3
+
 
 
 
