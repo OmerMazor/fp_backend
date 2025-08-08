@@ -17,9 +17,11 @@ def teams_data(home_team, away_team, home_market_value, away_market_value):
     # print(f"WebGL enabled: {webgl_status}")
     options = uc.ChromeOptions()
     options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")       # חשוב לענן
     options.add_argument("--disable-blink-features=AutomationControlled")
-    options.add_argument("--headless")
-    driver = uc.Chrome(options=options) 
+    options.add_argument("--headless=new")                 # headless מודרני
+    options.add_argument("--disable-gpu")
+    options.add_argument("--window-size=1920,1080")
     url = f"https://fbref.com/en/search/search.fcgi?hint={home_team.replace(' ', '+')}&search={home_team.replace(' ', '+')}&pid=&idx="
     driver.get(url)
     time.sleep(5)
@@ -440,4 +442,5 @@ def matches_day_data():
 
     except Exception as e:
         print(f"An error occurred: {e}")
+
     driver.quit()
