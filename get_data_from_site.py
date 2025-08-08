@@ -210,8 +210,8 @@ def teams_data(home_team, away_team, home_market_value, away_market_value):
 
     driver.quit()
     return home_wins, draws, away_wins, home_position, home_goals, home_goals_against, \
-    home_goalkeeping, home_shot_on_target, home_accuracy, away_position, \
-    away_goals, away_goals_against, away_goalkeeping, away_shot_on_target 
+    home_accuracy, home_goalkeeping, home_red_cards, home_shot_on_target, away_position, \
+    away_goals, away_goals_against, away_shot_on_target, away_accuracy, away_goalkeeping, home_games, away_games
 
 def matches_day_data():
 
