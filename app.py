@@ -37,7 +37,9 @@ from get_data_from_site import teams_data
 
 
 app = Flask(__name__)
-CORS(app) 
+CORS(app, resources={r"/api/*": {"origins": "*"}},
+     methods=["GET","POST","OPTIONS"],
+     allow_headers=["Content-Type","Authorization"]) 
 
 # loaded = load("model_with_accuracy.joblib")
 # pipeline = load("pipeline.joblib")
@@ -218,3 +220,4 @@ def get_predictions():
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
+
