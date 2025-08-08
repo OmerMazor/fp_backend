@@ -69,6 +69,7 @@ def get_models():
 
 @app.route("/api/teams", methods=["POST"])
 def receive_teams():
+    print(">>> /api/teams hit. method=", request.method)
     data = request.json
     home_team = data.get("homeTeam", "")
     away_team = data.get("awayTeam", "")
@@ -220,4 +221,5 @@ def get_predictions():
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
+
 
