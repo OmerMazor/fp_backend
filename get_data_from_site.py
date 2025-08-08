@@ -22,6 +22,7 @@ def teams_data(home_team, away_team, home_market_value, away_market_value):
     options.add_argument("--headless=new")                 # headless מודרני
     options.add_argument("--disable-gpu")
     options.add_argument("--window-size=1920,1080")
+    driver = uc.Chrome(options=options) 
     url = f"https://fbref.com/en/search/search.fcgi?hint={home_team.replace(' ', '+')}&search={home_team.replace(' ', '+')}&pid=&idx="
     driver.get(url)
     time.sleep(5)
