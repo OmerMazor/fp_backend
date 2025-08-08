@@ -6,6 +6,7 @@ import time
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from datetime import datetime
 import undetected_chromedriver as uc
+import os
 
 
 def teams_data(home_team, away_team, home_market_value, away_market_value):  
@@ -454,5 +455,6 @@ def matches_day_data():
         print(f"An error occurred: {e}")
 
     driver.quit()
+
 
 
