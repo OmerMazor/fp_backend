@@ -2,34 +2,43 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import time
-from selenium.webdriver.firefox.options import Options as FirefoxOptions
-from datetime import datetime
 import os
 
 def _resolve_command_executor():
-    ce = os.getenv("BROWSERLESS_HTTP")  # חייב להיות בפורמט החדש
+    ce = os.getenv("BROWSERLESS_HTTP")  # למשל: https://production-sfo.browserless.io/webdriver?token=...
     if not ce:
         raise RuntimeError("Missing BROWSERLESS_HTTP env var")
     return ce
 
-
-def teams_data(home_team, away_team, home_market_value, away_market_value):  
-    command_executor = _resolve_command_executor()
-    # הדפסה קטנה ללוגים לאימות (אפשר להסיר אחרי שעובד)
-    print("Browserless executor:", command_executor)
-
-    opts = webdriver.ChromeOptions()
+def _make_driver(command_executor: str) -> webdriver.Remote:
+    opts = Options()
     opts.add_argument("--headless=new")
     opts.add_argument("--no-sandbox")
     opts.add_argument("--disable-dev-shm-usage")
     opts.add_argument("--disable-gpu")
     opts.add_argument("--window-size=1920,1080")
     opts.add_argument("--disable-blink-features=AutomationControlled")
-    opts.add_experimental_option("excludeSwitches", ["enable-automation"])
-    opts.add_experimental_option("useAutomationExtension", False)
 
-    driver = webdriver.Remote(command_executor=command_executor, options=opts)
+    # capabilities מלאים – מונע “Not Implemented” בחלק מהספקים
+    caps = DesiredCapabilities.CHROME.copy()
+    caps.update(opts.to_capabilities())
+
+    d = webdriver.Remote(
+        command_executor=command_executor,
+        desired_capabilities=caps
+    )
+    d.set_page_load_timeout(60)
+    d.implicitly_wait(2)
+    return d
+
+def teams_data(home_team, away_team, home_market_value, away_market_value):  
+    command_executor = _resolve_command_executor()
+    print("Browserless executor:", command_executor)
+
+    driver = _make_driver(command_executor)
     url = f"https://fbref.com/en/search/search.fcgi?hint={home_team.replace(' ', '+')}&search={home_team.replace(' ', '+')}&pid=&idx="
     driver.get(url)
     time.sleep(5)
@@ -222,6 +231,7 @@ def teams_data(home_team, away_team, home_market_value, away_market_value):
     return home_wins, draws, away_wins, home_position, home_goals, home_goals_against, \
     home_accuracy, home_goalkeeping, home_red_cards, home_shot_on_target, away_position, \
     away_goals, away_goals_against, away_shot_on_target, away_accuracy, away_goalkeeping, home_games, away_games
+
 
 
 
