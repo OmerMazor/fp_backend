@@ -9,18 +9,17 @@ import undetected_chromedriver as uc
 import os
 
 def _resolve_command_executor():
-    http = os.getenv("BROWSERLESS_HTTP")
-    if http:
-        return http
-    ws = os.getenv("BROWSERLESS_WS")
-    if ws and ws.startswith("wss://chrome.browserless.io"):
-        # ממיר ל-HTTP כפי ש-Selenium צריך
-        return ws.replace("wss://chrome.browserless.io", "https://chrome.browserless.io/webdriver")
-    raise RuntimeError("Missing BROWSERLESS_HTTP (or BROWSERLESS_WS) env var")
+    ce = os.getenv("BROWSERLESS_HTTP")  # חייב להיות בפורמט החדש
+    if not ce:
+        raise RuntimeError("Missing BROWSERLESS_HTTP env var")
+    return ce
 
 
 def teams_data(home_team, away_team, home_market_value, away_market_value):  
     command_executor = _resolve_command_executor()
+    # הדפסה קטנה ללוגים לאימות (אפשר להסיר אחרי שעובד)
+    print("Browserless executor:", command_executor)
+
     opts = webdriver.ChromeOptions()
     opts.add_argument("--headless=new")
     opts.add_argument("--no-sandbox")
@@ -457,6 +456,7 @@ def matches_day_data():
         print(f"An error occurred: {e}")
 
     driver.quit()
+
 
 
 
