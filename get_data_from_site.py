@@ -8,29 +8,31 @@ from datetime import datetime
 import undetected_chromedriver as uc
 import os
 
+def _resolve_command_executor():
+    http = os.getenv("BROWSERLESS_HTTP")
+    if http:
+        return http
+    ws = os.getenv("BROWSERLESS_WS")
+    if ws and ws.startswith("wss://chrome.browserless.io"):
+        # ממיר ל-HTTP כפי ש-Selenium צריך
+        return ws.replace("wss://chrome.browserless.io", "https://chrome.browserless.io/webdriver")
+    raise RuntimeError("Missing BROWSERLESS_HTTP (or BROWSERLESS_WS) env var")
+
 
 def teams_data(home_team, away_team, home_market_value, away_market_value):  
-    BROWSERLESS_WS = os.getenv("BROWSERLESS_WS")
+    command_executor = _resolve_command_executor()
     opts = webdriver.ChromeOptions()
-    # דגלים מומלצים
     opts.add_argument("--headless=new")
     opts.add_argument("--no-sandbox")
     opts.add_argument("--disable-dev-shm-usage")
     opts.add_argument("--disable-gpu")
     opts.add_argument("--window-size=1920,1080")
     opts.add_argument("--disable-blink-features=AutomationControlled")
-    # אפשר גם user-agent משלך:
-    # opts.add_argument("--user-agent=Mozilla/5.0 ...")
-
-    # קצת “stealth” בסיסי
     opts.add_experimental_option("excludeSwitches", ["enable-automation"])
     opts.add_experimental_option("useAutomationExtension", False)
-    opts.page_load_strategy = "eager"  # עולה מהר יותר לרוב הסקראייפים
 
-    # התחברות ל-Browserless (תעדיף WS; אם אין – תשתמש HTTP)
-    command_executor = BROWSERLESS_WS or BROWSERLESS_HTTP
-    if not command_executor:
-        raise RuntimeError("Missing BROWSERLESS_WS or BROWSERLESS_HTTP env var")
+    driver = webdriver.Remote(command_executor=command_executor, options=opts)
+
 
     driver = webdriver.Remote(command_executor=command_executor, options=opts)
     url = f"https://fbref.com/en/search/search.fcgi?hint={home_team.replace(' ', '+')}&search={home_team.replace(' ', '+')}&pid=&idx="
@@ -455,6 +457,7 @@ def matches_day_data():
         print(f"An error occurred: {e}")
 
     driver.quit()
+
 
 
 
