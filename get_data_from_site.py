@@ -37,9 +37,11 @@ def _make_driver(command_executor: str) -> webdriver.Remote:
 
 def teams_data(home_team, away_team, home_market_value, away_market_value):  
     options = uc.ChromeOptions()
+    options.binary_location = "/usr/bin/chromium"  # 🔹 זה הנתיב ל-Chromium ב-Render
     options.add_argument("--headless=new")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
+    
     driver = uc.Chrome(options=options)
     url = f"https://fbref.com/en/search/search.fcgi?hint={home_team.replace(' ', '+')}&search={home_team.replace(' ', '+')}&pid=&idx="
     driver.get(url)
@@ -233,6 +235,7 @@ def teams_data(home_team, away_team, home_market_value, away_market_value):
     return home_wins, draws, away_wins, home_position, home_goals, home_goals_against, \
     home_accuracy, home_goalkeeping, home_red_cards, home_shot_on_target, away_position, \
     away_goals, away_goals_against, away_shot_on_target, away_accuracy, away_goalkeeping, home_games, away_games
+
 
 
 
