@@ -22,17 +22,16 @@ def _make_driver(command_executor: str) -> webdriver.Remote:
     opts.add_argument("--window-size=1920,1080")
     opts.add_argument("--disable-blink-features=AutomationControlled")
 
-    # capabilities מלאים – מונע “Not Implemented” בחלק מהספקים
-    caps = DesiredCapabilities.CHROME.copy()
-    caps.update(opts.to_capabilities())
+    # ודא שיש browserName=chrome ביכולות (חלק מהשרתים דורשים זאת במפורש)
+    opts.set_capability("browserName", "chrome")
 
-    d = webdriver.Remote(
+    driver = webdriver.Remote(
         command_executor=command_executor,
-        desired_capabilities=caps
+        options=opts
     )
-    d.set_page_load_timeout(60)
-    d.implicitly_wait(2)
-    return d
+    driver.set_page_load_timeout(60)
+    driver.implicitly_wait(2)
+    return driver
 
 def teams_data(home_team, away_team, home_market_value, away_market_value):  
     command_executor = _resolve_command_executor()
@@ -231,6 +230,7 @@ def teams_data(home_team, away_team, home_market_value, away_market_value):
     return home_wins, draws, away_wins, home_position, home_goals, home_goals_against, \
     home_accuracy, home_goalkeeping, home_red_cards, home_shot_on_target, away_position, \
     away_goals, away_goals_against, away_shot_on_target, away_accuracy, away_goalkeeping, home_games, away_games
+
 
 
 
